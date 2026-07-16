@@ -1,12 +1,17 @@
 package com.gymflow.gymflow.user;
 
+import com.gymflow.gymflow.exceptions.UserAlreadyExistsException;
 import com.gymflow.gymflow.user.dto.UserEmployeeRequest;
+import com.gymflow.gymflow.user.dto.UserEmployeeUpdateRequest;
 import com.gymflow.gymflow.user.dto.UserResponse;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
+import static com.gymflow.gymflow.helper.ValidationHelper.validate;
 import static com.gymflow.gymflow.user.UserDomain.createEmployee;
 
 @Service
@@ -24,18 +29,8 @@ public class UserService {
         return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    private UserResponse toResponse(UserDomain userDomain) {
-        return new UserResponse(
-                userDomain.getUsername(),
-                userDomain.getEmail(),
-                userDomain.getRole().name()
-        );
-    }
-
     public UserResponse createEmployeeUser(UserEmployeeRequest request) {
-        if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new IllegalArgumentException("Já existe um usuário com esse e-mail.");
-        }
+        validate(userRepository.findByEmail(request.email()).isPresent(), new UserAlreadyExistsException());
 
         String encodedPassword = passwordEncoder.encode(request.password());
         UserDomain user = createEmployee(request.username(), request.email(), encodedPassword);
@@ -45,6 +40,31 @@ public class UserService {
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole().name()
+        );
+    }
+
+    public UserResponse updateEmployeeUserByUserId(UUID userId, UserEmployeeUpdateRequest request) {
+        UserDomain currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        currentUser.updateUserEmployee(request.username(), request.email());
+        userRepository.save(currentUser);
+        return toResponse(currentUser);
+    }
+
+    public UserResponse deleteEmployeeUserById(UUID userId) {
+        UserDomain currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        userRepository.deleteById(userId);
+        return toResponse(currentUser);
+    }
+
+    private UserResponse toResponse(UserDomain userDomain) {
+        return new UserResponse(
+                userDomain.getUsername(),
+                userDomain.getEmail(),
+                userDomain.getRole().name()
         );
     }
 

@@ -2,11 +2,13 @@ package com.gymflow.gymflow.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "user_domain")
 public class UserDomain {
 
@@ -20,26 +22,25 @@ public class UserDomain {
     @Enumerated(EnumType.STRING)
     private UserRoles role;
 
-    public UserDomain(
-            String username,
-            String email,
-            String password,
-            UserRoles role) {
+    UserDomain(String username, String email, String password, UserRoles role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    public static UserDomain createEmployee(
-            String name,
-            String email,
-            String password) {
+    static UserDomain createEmployee(String username, String email, String password) {
         return new UserDomain(
-                name,
+                username,
                 email,
                 password,
                 UserRoles.EMPLOYEE
         );
     }
+
+    void updateUserEmployee(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
 }

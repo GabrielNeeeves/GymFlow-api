@@ -1,4 +1,4 @@
 package com.gymflow.gymflow.user.dto;
 
-public class UserEmployeeUpdateRequest {
+public record UserEmployeeUpdateRequest (String username, String email) {
 }

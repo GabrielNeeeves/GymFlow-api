@@ -1,10 +1,10 @@
 package com.gymflow.gymflow.helper;
 
-public class validationHelper {
+public class ValidationHelper {
     /*
      * Recebe uma condição, que quando true, lança a exceção no segundo parâmetro
      */
-    public void validate(boolean condition, RuntimeException runtimeException) {
+    public static void validate(boolean condition, RuntimeException runtimeException) {
         if (condition) {
             throw runtimeException;
         }

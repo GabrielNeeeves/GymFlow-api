@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,14 +15,11 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthenticationManager authenticationManager,
-                          JwtService jwtService, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService) {
 
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
