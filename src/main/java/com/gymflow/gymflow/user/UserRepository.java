@@ -1,4 +1,11 @@
 package com.gymflow.gymflow.user;
 
-public interface UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface UserRepository extends JpaRepository<UserDomain, UUID> {
+
+    Optional<UserDomain> findByEmail(String email);
 }

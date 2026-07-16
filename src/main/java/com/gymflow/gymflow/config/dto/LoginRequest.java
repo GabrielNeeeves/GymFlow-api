@@ -1,4 +1,4 @@
 package com.gymflow.gymflow.config.dto;
 
-public record LoginRequest() {
+public record LoginRequest(String email, String password) {
 }

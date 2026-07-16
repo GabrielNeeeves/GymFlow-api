@@ -1,4 +1,4 @@
 package com.gymflow.gymflow.user.dto;
 
-public class UserResponse {
+public record UserResponse(String username, String email, String role) {
 }
