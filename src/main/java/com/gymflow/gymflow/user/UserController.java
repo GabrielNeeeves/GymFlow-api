@@ -25,6 +25,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping("/{userId}")
+    ResponseEntity<UserResponse> getUserById(@PathVariable UUID userId) {
+        return ResponseEntity.ok(userService.getUserById(userId));
+    }
+
     @PostMapping("/create-employee")
     public ResponseEntity<UserResponse> createEmployeeUser(@RequestBody UserEmployeeRequest request) {
         UserResponse createdUser = userService.createEmployeeUser(request);
@@ -36,8 +41,14 @@ public class UserController {
         return ResponseEntity.ok(userService.updateEmployeeUserByUserId(userId, request));
     }
 
+    @PutMapping("/{userId}/change-password")
+    public ResponseEntity updateEmployeePasswordById(@PathVariable UUID userId, @RequestBody String newPassword) {
+        userService.updateEmployeeUserPasswordById(userId, newPassword);
+        return ResponseEntity.ok("Password updated");
+    }
+
     @DeleteMapping("/{userId}")
-    public ResponseEntity deleteEmplyeeById(@PathVariable UUID userId) {
+    public ResponseEntity deleteEmplyoeeById(@PathVariable UUID userId) {
         return ResponseEntity.ok(userService.deleteEmployeeUserById(userId));
     }
 }

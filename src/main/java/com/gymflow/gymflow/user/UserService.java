@@ -29,6 +29,13 @@ public class UserService {
         return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    public UserResponse getUserById(UUID userId) {
+        UserDomain currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return new UserResponse(currentUser.getUsername(), currentUser.getEmail(), currentUser.getRole().name());
+    }
+
     public UserResponse createEmployeeUser(UserEmployeeRequest request) {
         validate(userRepository.findByEmail(request.email()).isPresent(), new UserAlreadyExistsException());
 
@@ -45,11 +52,25 @@ public class UserService {
 
     public UserResponse updateEmployeeUserByUserId(UUID userId, UserEmployeeUpdateRequest request) {
         UserDomain currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        currentUser.updateUserEmployee(request.username(), request.email());
+        currentUser.updateEmployeeUser(request.username(), request.email());
         userRepository.save(currentUser);
         return toResponse(currentUser);
+    }
+
+    public UserResponse updateEmployeeUserPasswordById(UUID userId, String newPassword) {
+        UserDomain user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new IllegalArgumentException("New password must be different");
+        }
+
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        user.updateEmployeeUserPassword(encodedNewPassword);
+        userRepository.save(user);
+        return toResponse(user);
     }
 
     public UserResponse deleteEmployeeUserById(UUID userId) {

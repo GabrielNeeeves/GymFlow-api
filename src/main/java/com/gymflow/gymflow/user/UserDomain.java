@@ -38,9 +38,15 @@ public class UserDomain {
         );
     }
 
-    void updateUserEmployee(String username, String email) {
+    void updateEmployeeUser(String username, String email) {
         this.username = username;
         this.email = email;
+    }
+
+    void updateEmployeeUserPassword(String newPassword) {
+        if (!this.password.equals(newPassword)) {
+            this.password = newPassword;
+        }
     }
 
 }

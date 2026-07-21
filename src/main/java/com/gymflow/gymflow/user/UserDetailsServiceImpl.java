@@ -16,21 +16,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
     @Override
     public UserDetails loadUserByUsername(String email) {
-
         try {
-
-            System.out.println("Buscando: " + email);
-
             UserDomain userDomain = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException(email));
 
-            System.out.println("Usuário encontrado");
-            System.out.println(userDomain.getPassword());
-
-            return User.withUsername(userDomain.getEmail())
+            UserDetails details = User.withUsername(userDomain.getEmail())
                     .password(userDomain.getPassword())
                     .roles(userDomain.getRole().name())
                     .build();
+
+            return details;
 
         } catch (Exception e) {
             e.printStackTrace();
