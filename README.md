@@ -1,4 +1,3 @@
-# GymFlow
 # Gym Flow
 
 ## Visão geral do projeto
