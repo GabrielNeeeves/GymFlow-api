@@ -1,4 +1,4 @@
 package com.gymflow.gymflow.config.dto;
 
-public record LoginResponse() {
+public record LoginResponse(String token) {
 }
