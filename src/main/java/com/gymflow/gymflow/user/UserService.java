@@ -1,6 +1,7 @@
 package com.gymflow.gymflow.user;
 
-import com.gymflow.gymflow.exceptions.UserAlreadyExistsException;
+import com.gymflow.gymflow.helper.Validate;
+import com.gymflow.gymflow.user.exceptions.UserAlreadyExistsException;
 import com.gymflow.gymflow.user.dto.UserEmployeeRequest;
 import com.gymflow.gymflow.user.dto.UserEmployeeUpdateRequest;
 import com.gymflow.gymflow.user.dto.UserResponse;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-import static com.gymflow.gymflow.helper.ValidationHelper.validate;
 import static com.gymflow.gymflow.user.UserDomain.createEmployee;
 
 @Service
@@ -37,7 +37,9 @@ public class UserService {
     }
 
     public UserResponse createEmployeeUser(UserEmployeeRequest request) {
-        validate(userRepository.findByEmail(request.email()).isPresent(), new UserAlreadyExistsException());
+        Validate.throwIf(
+                userRepository.findByEmail(request.email()).isPresent(),
+                new UserAlreadyExistsException());
 
         String encodedPassword = passwordEncoder.encode(request.password());
         UserDomain user = createEmployee(request.username(), request.email(), encodedPassword);
@@ -59,7 +61,8 @@ public class UserService {
         return toResponse(currentUser);
     }
 
-    public UserResponse updateEmployeeUserPasswordById(UUID userId, String newPassword) {
+    // ANTES RETORNAVA UM UserResponse
+    public void updateEmployeeUserPasswordById(UUID userId, String newPassword) {
         UserDomain user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
@@ -70,7 +73,7 @@ public class UserService {
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         user.updateEmployeeUserPassword(encodedNewPassword);
         userRepository.save(user);
-        return toResponse(user);
+//        return toResponse(user);
     }
 
     public UserResponse deleteEmployeeUserById(UUID userId) {

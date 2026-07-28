@@ -1,4 +1,4 @@
-package com.gymflow.gymflow.exceptions;
+package com.gymflow.gymflow.user.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
 

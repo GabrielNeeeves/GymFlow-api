@@ -1,6 +1,6 @@
 package com.gymflow.gymflow.config;
 
-import com.gymflow.gymflow.exceptions.UserAlreadyExistsException;
+import com.gymflow.gymflow.user.exceptions.UserAlreadyExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
